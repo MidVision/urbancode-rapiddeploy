@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://www.urbancode.com/PluginXMLSchema_v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<header>
+		<identifier id="com.midvision.RapidDeploy" version="1" name="RapidDeploy" />
+		<description>This plugin provides an integration with a remote RapidDeploy server.</description>
+		<tag>RapidDeploy</tag>
+	</header>
+	
+	<!-- ==================================== -->
+    <!--   STEPS                              -->
+    <!-- ==================================== -->
+    
+    <!-- ==================================== -->
+    <!--  Generate a RD authentication token  -->
+    <!-- ==================================== -->
+	<step-type name="GenerateAuthToken">
+		<description>Generate an authentication token to connect to a remote RapidDeploy server. The token is available as an output property (i.e. ${p:STEP_NAME/RDAuthToken}) to use by other steps. IMPORTANT: This step requires a RapidDeploy instance on the server we are targeting.</description>
+		<properties>
+			<property name="mv_home" required="true">
+				<property-ui type="textBox"
+				label="MV_HOME path" description="Specify the absolute path to the RapidDeploy installation path (e.g. /apps/midvision)."/>
+			</property>
+			<property name="username" required="true">
+				<property-ui type="textBox"
+				label="Username"
+				default-value="${p:rapiddeploy.username}"
+				description="Specify the username to connect to the remote RapidDeploy server."/>
+			</property>
+			<property name="password" required="true">
+				<property-ui type="secureBox"
+				label="Password"
+				default-value="${p:rapiddeploy.password}"
+				description="Specify the password to connect to the remote RapidDeploy server."/>
+			</property>
+		</properties>
+		<post-processing><![CDATA[
+			scanner.register("mvauthtoken=", function(lineNumber, line) {
+			    var value = line.replace("mvauthtoken=", "");
+			    properties.put("RDAuthToken", value);
+			});
+			scanner.scan();
+
+			if (properties.get("exitCode") != 0) {
+				properties.put("Status", "Failure");
+			}else {
+				properties.put("Status", "Success");
+			}			
+		]]></post-processing>
+		<command program="${GROOVY_HOME}/bin/groovy">
+			<arg value="-cp"/>
+      		<arg path="lib/shell.jar:lib/CommonsUtil.jar:lib/log4j.jar:lib/NativeProcess.jar:lib/WinAPI.jar"/>
+			<arg file="generateRDAuthToken.groovy" />
+			<arg file="${PLUGIN_INPUT_PROPS}" />
+			<arg file="${PLUGIN_OUTPUT_PROPS}" />
+		</command>
+	</step-type>
+    
+    <!-- ==================================== -->
+    <!--   Build a RD deployment package      -->
+    <!-- ==================================== -->
+    <step-type name="BuildPackage">
+		<description>Build a deployment package on a remote RapidDeploy server.</description>
+		<properties>
+			<property name="serverUrl" required="true">
+				<property-ui type="textBox"
+				label="Server URL" description="Specify the RapidDeploy server URL to invoke (e.g. http://localhost:9090/MidVisioin)."/>
+			</property>
+			<property name="authToken" required="true">
+				<property-ui type="textBox"
+				label="Authentication token"
+				default-value="${p:GenerateAuthToken/RDAuthToken}"
+				description="Specify the token to authenticate agains the RapidDeploy server. 
+				If you don't have a token, you can generate it by running a script in your RapidDeploy installation (i.e. ${MV_HOME}/tools/run-web-service-encrypter.sh ~ .bat).
+				You can also use the GenerateAuthToken step that generates an authentication token, in this case set this value to the output property of the generation step 
+				(set by default) i.e. ${p:GENERATE_STEP_NAME/RDAuthToken}"/>
+			</property>
+			<property name="project" required="true">
+				<property-ui type="textBox"
+				label="Project name"
+				description="Specify the RapidDeploy project name of the project to package."/>
+			</property>
+			<property name="package" required="false">
+				<property-ui type="textBox"
+				label="Deployment package name"
+				description="Optional field. Leave this field blank to build a package with auto incremented version (e.g. PROJECT_NAME-0.0.1). 
+				Type a specific RapidDeploy deployment package name when required."/>
+			</property>
+		</properties>
+		<post-processing><![CDATA[			
+			if (properties.get("exitCode") != 0) {
+				properties.put("Status", "Failure");
+			}else {
+				properties.put("Status", "Success");
+			}			
+		]]></post-processing>
+		<command program="${GROOVY_HOME}/bin/groovy">
+			<arg value="-cp" />
+			<arg path="lib/rapiddeploy-connector-1.0.jar"/>
+			<arg file="buildRDPackage.groovy" />
+			<arg file="${PLUGIN_INPUT_PROPS}" />
+			<arg file="${PLUGIN_OUTPUT_PROPS}" />
+		</command>
+	</step-type>
+    
+    <!-- ==================================== -->
+    <!--   Run a RD Job                       -->
+    <!-- ==================================== -->
+	<step-type name="RunJob">
+		<description>Run a job on a remote RapidDeploy server.</description>
+		<properties>
+			<property name="serverUrl" required="true">
+				<property-ui type="textBox"
+				label="Server URL" description="Specify the RapidDeploy server URL to invoke (e.g. http://localhost:9090/MidVisioin)."/>
+			</property>
+			<property name="authToken" required="true">
+				<property-ui type="textBox"
+				label="Authentication token"
+				default-value="${p:GenerateAuthToken/RDAuthToken}"
+				description="Specify the token to authenticate agains the RapidDeploy server. 
+				If you don't have a token, you can generate it by running a script in your RapidDeploy installation (i.e. ${MV_HOME}/tools/run-web-service-encrypter.sh ~ .bat).
+				You can also use the GenerateAuthToken step that generates an authentication token, in this case set this value to the output property of the generation step 
+				(set by default) i.e. ${p:GENERATE_STEP_NAME/RDAuthToken}"/>
+			</property>
+			<property name="project" required="true">
+				<property-ui type="textBox"
+				label="Project name"
+				description="Specify the RapidDeploy project name of the project to deploy."/>
+			</property>
+			<property name="environment" required="true">
+				<property-ui type="textBox"
+				label="Project environment"
+				description="Specify the RapidDeploy project environment name. 
+				The environment string can be produced by concatenating the RapidDeploy target object names with a '.' character: [serverName].[environmentName].[instanceName].[applicationName]."/>
+			</property>
+			<property name="package" required="true">
+				<property-ui type="textBox"
+				label="Deployment package name" 
+				default-value="LATEST"
+				description="Specify the RapidDeploy deployment package name. Type 'LATEST' to deploy the latest available package for that project."/>
+			</property>
+			<property name="userName" required="false">
+				<property-ui type="textBox"
+				label="Username"
+				description="Optionally override the user name for the RapidDeploy transport plugin.
+				Please note that this will only take effect for environments using SSH transportation."/>
+			</property>
+			<property name="passwordEncrypted" required="false">
+				<property-ui type="textBox"
+				label="Encrypted password"
+				description="Optionally override the password value for the RapidDeploy transport plugin.
+				This value needs to be encrypted by the web service encrypter tool (i.e. ${MV_HOME}/tools/run-property-encrypter.sh ~ .bat).
+				Please note that this will only take effect for environments using SSH transportation."/>
+			</property>
+			<property name="keyFilePath" required="false">
+				<property-ui type="textBox"
+				label="Key file path"
+				description="Optionally override the key file path for the RapidDeploy transport plugin.
+				Please note that this will only take effect for environments using SSH transportation."/>
+			</property>
+			<property name="keyPassPhraseEncrypted" required="false">
+				<property-ui type="textBox"
+				label="Encrypted key passphrase"
+				description="Optionally override the passphrase value for the RapidDeploy transport plugin.
+				This value needs to be encrypted by the web service encrypter tool (i.e. ${MV_HOME}/tools/run-property-encrypter.sh ~ .bat).
+				Please note that this will only take effect for environments using SSH transportation."/>
+			</property>
+			<property name="encryptionKey" required="false">
+				<property-ui type="textBox"
+				label="Encryption key"
+				description="Specify the encyprtion key used to encrypt the values above.
+				Please note that this will only take effect for environments using SSH transportation."/>
+			</property>
+		</properties>
+		<post-processing><![CDATA[			
+			if (properties.get("exitCode") != 0) {
+				properties.put("Status", "Failure");
+			}else {
+				properties.put("Status", "Success");
+			}			
+		]]></post-processing>
+		<command program="${GROOVY_HOME}/bin/groovy">
+			<arg value="-cp" />
+			<arg path="lib/rapiddeploy-connector-1.0.jar"/>
+			<arg file="runRDJob.groovy" />
+			<arg file="${PLUGIN_INPUT_PROPS}" />
+			<arg file="${PLUGIN_OUTPUT_PROPS}" />
+		</command>
+	</step-type>
+</plugin>

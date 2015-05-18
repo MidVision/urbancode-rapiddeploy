@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<pluginInfo>
+	<author name="Rafael Ruiz Palacios">
+		<organization>MidVision</organization>
+		<email>support@midvision.com</email>
+		<website>http://www.midvision.com</website>
+		<bio />
+	</author>
+	<integration type="Automation" />
+	<tool-description>
+		This plugin supports the integration between UrbanCode and RapidDeploy.
+	</tool-description>
+	<release-version>1.0</release-version>
+	<release-notes>
+		<release-note plugin-version="1">
+			Initial release of the RapidDeploy integration in UrbanCode.
+		</release-note>
+	</release-notes>
+</pluginInfo>
