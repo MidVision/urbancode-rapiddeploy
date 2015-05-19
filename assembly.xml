@@ -24,32 +24,32 @@
 		<file>
 			<source>buildRDPackage.groovy</source>
 			<outputDirectory></outputDirectory>
-			<fileMode>644</fileMode>
+			<fileMode>755</fileMode>
 		</file>
 		<file>
 			<source>generateRDAuthToken.groovy</source>
 			<outputDirectory></outputDirectory>
-			<fileMode>644</fileMode>
+			<fileMode>755</fileMode>
 		</file>
 		<file>
 			<source>info.xml</source>
 			<outputDirectory></outputDirectory>
-			<fileMode>644</fileMode>
+			<fileMode>755</fileMode>
 		</file>
 		<file>
 			<source>plugin.xml</source>
 			<outputDirectory></outputDirectory>
-			<fileMode>644</fileMode>
+			<fileMode>755</fileMode>
 		</file>
 		<file>
 			<source>runRDJob.groovy</source>
 			<outputDirectory></outputDirectory>
-			<fileMode>644</fileMode>
+			<fileMode>755</fileMode>
 		</file>
 		<file>
 			<source>upgrade.xml</source>
 			<outputDirectory></outputDirectory>
-			<fileMode>644</fileMode>
+			<fileMode>755</fileMode>
 		</file>
 	</files>
 	<fileSets>
