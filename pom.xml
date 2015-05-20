@@ -2,8 +2,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.midvision.plugins.urbancode</groupId>
-	<artifactId>UrbanCode-RapidDeploy</artifactId>
+	<groupId>com.midvision.plugins</groupId>
+	<artifactId>urbancode-rapiddeploy</artifactId>
 	<version>1.0-SNAPSHOT</version>
 
 	<repositories>
@@ -57,16 +57,6 @@
 				<executions>
 					<execution>
 						<id>default-jar</id>
-						<phase>none</phase>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-install-plugin</artifactId>
-				<version>2.3.1</version>
-				<executions>
-					<execution>
-						<id>default-install</id>
 						<phase>none</phase>
 					</execution>
 				</executions>
