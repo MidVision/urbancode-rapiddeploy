@@ -54,6 +54,12 @@
 	</files>
 	<fileSets>
 		<fileSet>
+			<directory>lib</directory>
+			<outputDirectory>lib</outputDirectory>
+			<directoryMode>755</directoryMode>
+			<fileMode>755</fileMode>
+		</fileSet>
+		<fileSet>
 			<directory>classes</directory>
 			<outputDirectory>classes</outputDirectory>
 			<directoryMode>755</directoryMode>
