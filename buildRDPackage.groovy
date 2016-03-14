@@ -15,6 +15,6 @@ final def authToken = inputProps['authToken'];
 final def project = inputProps['project'];
 final def packageName = inputProps['package'];
 
-RapidDeployConnector.invokeRapidDeployBuildPackage(authToken, serverUrl, project, packageName, null, true);
+RapidDeployConnector.invokeRapidDeployBuildPackage(authToken, serverUrl, project, packageName, null, true, false);
 
 System.exit(0);

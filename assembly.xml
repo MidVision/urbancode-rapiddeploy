@@ -12,9 +12,10 @@
 	<dependencySets>
 		<dependencySet>
 			<includes>
-				<include>com.midvision.plugins:rapiddeploy-connector:jar:1.0</include>
+				<include>com.midvision.plugins:rapiddeploy-connector:jar:1.4</include>
 			</includes>
 			<outputDirectory>/lib</outputDirectory>
+			<outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
 			<useProjectArtifact>false</useProjectArtifact>
 			<unpack>false</unpack>
 			<scope>runtime</scope>

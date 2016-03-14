@@ -95,7 +95,7 @@
 		]]></post-processing>
 		<command program="${GROOVY_HOME}/bin/groovy">
 			<arg value="-cp" />
-			<arg path="lib/rapiddeploy-connector-1.0.jar"/>
+			<arg path="lib/rapiddeploy-connector.jar"/>
 			<arg file="buildRDPackage.groovy" />
 			<arg file="${PLUGIN_INPUT_PROPS}" />
 			<arg file="${PLUGIN_OUTPUT_PROPS}" />
@@ -180,7 +180,7 @@
 		]]></post-processing>
 		<command program="${GROOVY_HOME}/bin/groovy">
 			<arg value="-cp" />
-			<arg path="lib/rapiddeploy-connector-1.0.jar"/>
+			<arg path="lib/rapiddeploy-connector.jar"/>
 			<arg file="runRDJob.groovy" />
 			<arg file="${PLUGIN_INPUT_PROPS}" />
 			<arg file="${PLUGIN_OUTPUT_PROPS}" />
